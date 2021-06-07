@@ -1,0 +1,59 @@
+-
+  name: k8sapp
+  hosts: all
+  become: yes
+
+  vars:
+    img1: gb0001/apptpjuin:latest
+
+  tasks:
+    - name: Create Deployment
+      k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: "{{item.name}}"
+            namespace: default
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: "{{item.name}}"
+            template:
+              metadata:
+                labels:
+                  app: "{{item.name}}"
+              spec:
+                containers:
+                - name: "{{item.name}}"
+                  image: "{{img1}}"
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                  - containerPort: "{{item.portn}}"
+        with_items:
+          - { name: dev , portn: 3002 }
+          - { name: test , portn: 3003 }
+          - { name: prod , portn: 3004 }
+
+    - name: Create Service
+      k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Ingress
+          metadata:
+            name: "{{item.name}}"
+            namespace: default
+          spec:
+            type: ClusterIP
+            ports:
+            - port: "{{item.portn}}"
+              targetPort: "{{item.portn}}"
+            selector:
+              app: "{{item.name}}"
+        with_items:
+          - { name: dev , portn: 3002 }
+          - { name: test , portn: 3003 }
+          - { name: prod , portn: 3004 }
