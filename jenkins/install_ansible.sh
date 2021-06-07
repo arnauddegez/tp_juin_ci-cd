@@ -15,4 +15,4 @@ install_package "sshpass"
 #creation du repertoire ansible + recuperation du playbook
 sudo mkdir /home/vagrant/ansible
 cd /home/vagrant/ansible && wget -O hosts https://github.com/arnauddegez/tp_juin_ci-cd/raw/main/ansible/hosts
-cd /home/vagrant/ansible && wget -O playbook https://github.com/arnauddegez/tp_juin_ci-cd/raw/main/ansible/playbook.yml
+cd /home/vagrant/ansible && wget -O playbook.yml https://github.com/arnauddegez/tp_juin_ci-cd/raw/main/ansible/playbook.yml
