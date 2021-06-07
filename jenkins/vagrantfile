@@ -17,6 +17,8 @@ Vagrant.configure(2) do |config|
 		end
 		jenkins.vm.synced_folder "shared/", "/home/shared", create: true
 		jenkins.vm.provision "shell", path: "install_jenkins.sh"
-		
+		jenkins.vm.provision "shell", path: "install_ansible.sh"
+		jenkins.vm.provision "shell", path: "install_docker.sh"
+
 	end
 end
