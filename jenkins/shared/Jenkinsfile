@@ -1,0 +1,44 @@
+ pipeline {
+    agent any
+    stages {
+        stage('clone source') {
+            steps {
+                git url: 'https://github.com/arnauddegez/tp_juin_ci-cd.git'
+            }
+        }
+        
+        stage('build') {
+            steps {
+                sh 'cd ./docker && docker build -t apptpjuin .'
+            }
+        }
+
+        stage('run') {
+            steps {
+                sh 'docker run -d --name apptp -p 3002:3002 --rm apptpjuin'
+            }
+        }
+
+        stage('test'){
+            steps {
+                sh 'curl http://192.168.40.11:3002'
+            }
+        }
+        stage('Push image') {
+            docker.withRegistry('https://registry.hub.docker.com', 'docker') {            
+                def customImage = docker.build("apptpjuin:${env.BUILD_ID}")
+
+                /* Push the container to the custom Registry */
+                customImage.push()      
+            }    
+        }
+
+        stage('deploy') {
+            steps {
+                sh 'ansible-playbook -i hosts playbook.yml'
+            }
+        }
+
+    }
+ }
+
