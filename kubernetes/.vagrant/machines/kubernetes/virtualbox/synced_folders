@@ -1,1 +1,0 @@
-{"virtualbox":{"/home/shared":{"create":true,"guestpath":"/home/shared","hostpath":"C:/Users/ib/Documents/_GIT/tp_juin_ci-cd/kubernetes/shared","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"C:/Users/ib/Documents/_GIT/tp_juin_ci-cd/kubernetes","disabled":false,"__vagrantfile":true}}}
