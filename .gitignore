@@ -1,4 +1,3 @@
-install_docker.sh
 ubuntu-bionic-18.04-cloudimg-console.log
 .vagrant/machines/default/virtualbox/action_provision
 .vagrant/machines/default/virtualbox/action_set_name
