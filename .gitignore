@@ -23,3 +23,15 @@ jenkins/.vagrant/machines/jenkins/virtualbox/private_key
 jenkins/.vagrant/machines/jenkins/virtualbox/synced_folders
 jenkins/.vagrant/machines/jenkins/virtualbox/vagrant_cwd
 jenkins/.vagrant/rgloader/loader.rb
+.vagrant/bundler/global.sol
+kubernetes/.vagrant/bundler/global.sol
+kubernetes/.vagrant/machines/kubernetes/virtualbox/action_provision
+kubernetes/.vagrant/machines/kubernetes/virtualbox/action_set_name
+kubernetes/.vagrant/machines/kubernetes/virtualbox/box_meta
+kubernetes/.vagrant/machines/kubernetes/virtualbox/creator_uid
+kubernetes/.vagrant/machines/kubernetes/virtualbox/id
+kubernetes/.vagrant/machines/kubernetes/virtualbox/index_uuid
+kubernetes/.vagrant/machines/kubernetes/virtualbox/private_key
+kubernetes/.vagrant/machines/kubernetes/virtualbox/synced_folders
+kubernetes/.vagrant/machines/kubernetes/virtualbox/vagrant_cwd
+kubernetes/.vagrant/rgloader/loader.rb
