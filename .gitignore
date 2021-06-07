@@ -23,3 +23,4 @@ jenkins/.vagrant/machines/jenkins/virtualbox/private_key
 jenkins/.vagrant/machines/jenkins/virtualbox/synced_folders
 jenkins/.vagrant/machines/jenkins/virtualbox/vagrant_cwd
 jenkins/.vagrant/rgloader/loader.rb
+.vagrant/bundler/global.sol

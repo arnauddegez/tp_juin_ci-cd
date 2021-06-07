@@ -1,4 +1,11 @@
  pipeline {
+    environment {
+        registry = "gb001/gb001"
+        registryCredential = 'docker'
+        dockerImage = ''
+    }
+
+
     agent any
     stages {
         stage('clone source') {
@@ -9,7 +16,7 @@
         
         stage('build') {
             steps {
-                sh 'cd ./docker && docker build -t apptpjuin .'
+                sh 'cd ./tp_juin_ci-cd/docker && docker build -t apptpjuin .'
             }
         }
 
@@ -24,13 +31,14 @@
                 sh 'curl http://192.168.40.11:3002'
             }
         }
-        stage('Push image') {
-            docker.withRegistry('https://registry.hub.docker.com', 'docker') {            
-                def customImage = docker.build("apptpjuin:${env.BUILD_ID}")
-
-                /* Push the container to the custom Registry */
-                customImage.push()      
-            }    
+        stage('push Image') {
+            steps{
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push()
+                    }
+                }
+            }
         }
 
         stage('deploy') {
@@ -40,5 +48,5 @@
         }
 
     }
- }
+}
 
