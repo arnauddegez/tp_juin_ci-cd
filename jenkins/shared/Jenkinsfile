@@ -6,7 +6,7 @@
                 git url: 'https://github.com/arnauddegez/tp_juin_ci-cd.git'
             }
         }
-        
+
         stage('build') {
             steps {
                 sh 'cd ./docker && docker build -t apptpjuin .'
@@ -25,17 +25,17 @@
             }
         }
         stage('Push image') {
-            docker.withRegistry('https://registry.hub.docker.com', 'docker') {            
+            docker.withRegistry('https://registry.hub.docker.com', 'docker') {
                 def customImage = docker.build("apptpjuin:${env.BUILD_ID}")
 
                 /* Push the container to the custom Registry */
-                customImage.push()      
-            }    
+                customImage.push()
+            }
         }
 
         stage('deploy') {
             steps {
-                sh 'ansible-playbook -i hosts playbook.yml'
+                sh 'ansible-playbook -i /home/vagrant/ansible/hosts /home/vagrant/ansible/playbook.yml'
             }
         }
 
