@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#Install Minikube
 cd $HOME && curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
@@ -15,6 +16,7 @@ minikube start --force --driver=docker
 
 mkdir /home/vagrant/.kube
 sudo chown vagrant: /home/vagrant/.kube
+
 
 #recuperation de l'id du container minikube
 #echo "Recuperation de l'id du container minikube:"
