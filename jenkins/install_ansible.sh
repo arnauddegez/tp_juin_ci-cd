@@ -16,3 +16,6 @@ install_package "sshpass"
 sudo mkdir /home/vagrant/ansible
 cd /home/vagrant/ansible && wget -O hosts https://github.com/arnauddegez/tp_juin_ci-cd/raw/main/ansible/hosts
 cd /home/vagrant/ansible && wget -O playbook.yml https://github.com/arnauddegez/tp_juin_ci-cd/raw/main/ansible/playbook.yml
+
+#pour le fonctionnement de sshpass avec ansible
+sudo sed -i 's/#host_key_checking = False/host_key_checking = False/g' /etc/ansible/ansible.cfg
