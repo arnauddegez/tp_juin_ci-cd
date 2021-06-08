@@ -7,8 +7,20 @@
     img1: gb0001/apptpjuin:latest
 
   tasks:
+    - name: Install pip
+      tags: install_pip
+      apt:
+        name: python3-pip
+        state: present
+    - name: Install python modules openshift
+      tags: install_python_modules_openshift
+      pip:
+        name: "{{item.name}}"
+        executable: pip3
+        state: present
+      with_items:
+        - { name: openshift }
     - name: Create Deployment
-      become: yes
       k8s:
         state: present
         definition:
@@ -36,13 +48,12 @@
                     targetPort: "{{item.targetportn}}"
                     name: "port-{{item.targetportn}}-tcp"
                     port: "{{item.portn}}"
-        with_items:
-          - { name: dev , targetportn: 3002 , portn: 30002}
-          - { name: test , targetportn: 3003 , portn: 30003}
-          - { name: prod , targetportn: 3004 , portn: 30004}
+      with_items:
+        - { name: dev , targetportn: 3002 , portn: 30002}
+        - { name: test , targetportn: 3003 , portn: 30003}
+        - { name: prod , targetportn: 3004 , portn: 30004}
 
     - name: Create Service
-      become: yes
       k8s:
         state: present
         definition:
@@ -58,7 +69,7 @@
               targetPort: "{{item.targetportn}}"
             selector:
               app: "{{item.name}}"
-        with_items:
-          - { name: dev , targetportn: 3002 , portn: 30002}
-          - { name: test , targetportn: 3003 , portn: 30003}
-          - { name: prod , targetportn: 3004 , portn: 30004}
+      with_items:
+        - { name: dev , targetportn: 3002 , portn: 30002}
+        - { name: test , targetportn: 3003 , portn: 30003}
+        - { name: prod , targetportn: 3004 , portn: 30004}
