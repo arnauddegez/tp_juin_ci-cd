@@ -7,66 +7,58 @@
     img1: gb0001/apptpjuin:latest
 
   tasks:
-    - name: Install pip
-      tags: install_pip
-      apt:
-        name: python3-pip
-        state: present
-    - name: Install python modules openshift
-      tags: install_python_modules_openshift
-      pip:
-        name: "{{item.name}}"
-        executable: pip3
-        state: present
-      with_items:
-        - { name: openshift }
     - name: Create Deployment
+      become: yes
       k8s:
         state: present
         definition:
           apiVersion: apps/v1
           kind: Deployment
           metadata:
-            name: "{{item.name}}"
-            namespace: default
+            name: "client-{{item.name}}"
+            namespace: ns-app-{{item.name}}
           spec:
             replicas: 1
             selector:
               matchLabels:
-                app: "{{item.name}}"
+                app: "client-{{item.name}}"
             template:
               metadata:
                 labels:
-                  app: "{{item.name}}"
+                  app: "client-{{item.name}}"
               spec:
                 containers:
-                - name: "{{item.name}}"
+                - name: "client-{{item.name}}"
                   image: "{{img1}}"
                   imagePullPolicy: IfNotPresent
                   ports:
-                  - containerPort: "{{item.portn}}"
-      with_items:
-        - { name: dev , portn: 3002 }
-        - { name: test , portn: 3003 }
-        - { name: prod , portn: 3004 }
+                  - protocol: TCP
+                    targetPort: "{{item.targetportn}}"
+                    name: "port-{{item.targetportn}}-tcp"
+                    port: "{{item.portn}}"
+        with_items:
+          - { name: dev , targetportn: 3002 , portn: 30002}
+          - { name: test , targetportn: 3003 , portn: 30003}
+          - { name: prod , targetportn: 3004 , portn: 30004}
 
     - name: Create Service
+      become: yes
       k8s:
         state: present
         definition:
           apiVersion: v1
-          kind: Ingress
+          kind: Service
           metadata:
-            name: "{{item.name}}"
-            namespace: default
+            name: "client-{{item.name}}"
+            namespace: ns-app-{{item.name}}
           spec:
-            type: ClusterIP
+            type: NodePort
             ports:
             - port: "{{item.portn}}"
-              targetPort: "{{item.portn}}"
+              targetPort: "{{item.targetportn}}"
             selector:
               app: "{{item.name}}"
-      with_items:
-        - { name: dev , portn: 3002 }
-        - { name: test , portn: 3003 }
-        - { name: prod , portn: 3004 }
+        with_items:
+          - { name: dev , targetportn: 3002 , portn: 30002}
+          - { name: test , targetportn: 3003 , portn: 30003}
+          - { name: prod , targetportn: 3004 , portn: 30004}
