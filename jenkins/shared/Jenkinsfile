@@ -10,7 +10,8 @@
     stages {
         stage('clone source') {
             steps {
-                git url: 'https://github.com/arnauddegez/tp_juin_ci-cd.git'
+                sh 'rm -rf tp_juin_ci-cd'
+                sh 'git clone https://github.com/arnauddegez/tp_juin_ci-cd.git'
             }
         }
 
