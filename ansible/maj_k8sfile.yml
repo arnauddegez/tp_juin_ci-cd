@@ -1,0 +1,32 @@
+- name: init file
+  shell: echo "" > ~/k8sapp/client-dpl.yml
+
+- name: MAJ FICHIER deploiement
+  become: yes
+  lineinfile:
+    dest: /root/k8sapp/client-dpl.yml
+    line: "{{ item }}"
+    state: present
+  with_items:
+    - "apiVersion: apps/v1"
+    - "kind: Deployment"
+    - "metadata:"
+    - "  name: client-dpl-{{CLIENTNAME}}"
+    - "spec:"
+    - "  replicas: 1"
+    - "  selector:"
+    - "    matchLabels:"
+    - "      app: {{CLIENTNAME}}"
+    - "  template: # template de pod"
+    - "    metadata:"
+    - "      name: client-pod"
+    - "      labels:"
+    - "        app: {{CLIENTNAME}}"
+    - "    spec:"
+    - "      containers:"
+    - "        - name: {{CLIENTNAME}}"
+    - "          image: gb0001/apptpjuin:latest"
+- name: mise en palce du deploiement
+  shell: "{{ item }}"
+  with_items:
+    - sudo -H -u root sh -c "kubectl apply -f /root/k8sapp/client-dpl.yml"
