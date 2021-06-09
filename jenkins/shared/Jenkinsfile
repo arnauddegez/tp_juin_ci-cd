@@ -1,6 +1,6 @@
  pipeline {
     environment {
-        registry = "gb001/gb001"
+        registry = "gb0001/apptpjuin"
         registryCredential = 'docker'
         dockerImage = ''
     }
@@ -17,26 +17,31 @@
 
         stage('build') {
             steps {
-                sh 'cd ./tp_juin_ci-cd/docker && docker build -t apptpjuin .'
+                sh 'cd ./tp_juin_ci-cd/docker && docker build -t gb0001/apptpjuin .'
+               
             }
         }
 
         stage('run') {
             steps {
-                sh 'docker run -d --name apptp -p 3002:3002 --rm apptpjuin'
+                
+                sh 'docker run -d --name apptp -p 3002:3002 --rm gb0001/apptpjuin'
             }
         }
 
         stage('test'){
             steps {
+                sh 'sleep 15s'
                 sh 'curl http://192.168.40.11:3002'
+                
             }
         }
         stage('push Image') {
             steps{
                 script {
-                    docker.withRegistry( '', registryCredential ) {
-                        dockerImage.push()
+                    docker.withRegistry( '', registryCredential ) { 
+                        sh 'docker push gb0001/apptpjuin'
+                       
                     }
                 }
             }
@@ -50,4 +55,3 @@
 
     }
 }
-
