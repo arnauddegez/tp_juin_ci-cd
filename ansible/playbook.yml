@@ -4,72 +4,57 @@
   become: yes
 
   vars:
-    img1: gb0001/apptpjuin:latest
+    k8sapppath: ~/k8sapp
+    DIC1:
+      - CLI1: client-dev
+        PORTINFO:
+          - PORTA: '3202'
+            TARGETPORTA: '3002'
+            PORTNA: '30002'
+      - CLI1: client-test
+        PORTINFO:
+          - PORTA: '3203'
+            TARGETPORTA: '3002'
+            PORTNA: '30003'
+      - CLI1: client-prod
+        PORTINFO:
+          - PORTA: '3204'
+            TARGETPORTA: '3002'
+            PORTNA: '30004'
 
   tasks:
-    - name: Install pip
-      tags: install_pip
-      apt:
-        name: python3-pip
-        state: present
-    - name: Install python modules openshift
-      tags: install_python_modules_openshift
-      pip:
-        name: "{{item.name}}"
-        executable: pip3
-        state: present
-      with_items:
-        - { name: openshift }
-    - name: Create Deployment
-      k8s:
-        state: present
-        definition:
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            name: "client-{{item.name}}"
-            namespace: ns-app-{{item.name}}
-          spec:
-            replicas: 1
-            selector:
-              matchLabels:
-                app: "client-{{item.name}}"
-            template:
-              metadata:
-                labels:
-                  app: "client-{{item.name}}"
-              spec:
-                containers:
-                - name: "client-{{item.name}}"
-                  image: "{{img1}}"
-                  imagePullPolicy: IfNotPresent
-                  ports:
-                  - protocol: TCP
-                    targetPort: "{{item.targetportn}}"
-                    name: "port-{{item.targetportn}}-tcp"
-                    port: "{{item.portn}}"
-      with_items:
-        - { name: dev , targetportn: 3002 , portn: 30002}
-        - { name: test , targetportn: 3003 , portn: 30003}
-        - { name: prod , targetportn: 3004 , portn: 30004}
+    - name: Creates directory "{{k8sapppath}}"
+      file:
+        path: "{{k8sapppath}}"
+        state: directory
 
-    - name: Create Service
-      k8s:
-        state: present
-        definition:
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: "client-{{item.name}}"
-            namespace: ns-app-{{item.name}}
-          spec:
-            type: NodePort
-            ports:
-            - port: "{{item.portn}}"
-              targetPort: "{{item.targetportn}}"
-            selector:
-              app: "{{item.name}}"
+    - copy:
+        src: /home/vagrant/ansible/maj_k8sfile.yml
+        dest: /home/vagrant/majk8sfile.yml
+    - copy:
+        src: /home/vagrant/ansible/maj_svck8sfile.yml
+        dest: /home/vagrant/majsvck8sfile.yml
+
+    - include_tasks: /home/vagrant/ansible/maj_k8sfile.yml
+      vars:
+        CLIENTNAME: "{{ item.0.CLI1 }}"
+      with_subelements:
+        - "{{DIC1}}"
+        - PORTINFO
+    - include_tasks: /home/vagrant/ansible/maj_svck8sfile.yml
+      vars:
+        CLIENTNAME: "{{ item.0.CLI1 }}"
+        PORT1: "{{ item.1.PORTA }}"
+        TARGETPORT: "{{ item.1.TARGETPORTA }}"
+        PORTN: "{{ item.1.PORTNA }}"
+      with_subelements:
+        - "{{DIC1}}"
+        - PORTINFO
+
+    - name: nettoyage
+      file:
+        state: absent
+        path: "{{ item }}"
       with_items:
-        - { name: dev , targetportn: 3002 , portn: 30002}
-        - { name: test , targetportn: 3003 , portn: 30003}
-        - { name: prod , targetportn: 3004 , portn: 30004}
+        - /home/vagrant/majsvck8sfile.yml
+        - /home/vagrant/majk8sfile.yml

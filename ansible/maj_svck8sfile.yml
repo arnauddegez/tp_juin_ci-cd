@@ -1,0 +1,27 @@
+- name: init file
+  shell: echo "" > ~/k8sapp/svc.yml
+
+- name: MAJ FICHIER SERVICE
+  become: yes
+  lineinfile:
+    dest: /root/k8sapp/svc.yml
+    line: "{{ item }}"
+    state: present
+  with_items:
+    - "apiVersion: v1"
+    - "kind: Service"
+    - "metadata:"
+    - "  name: client-srv-{{CLIENTNAME}}"
+    - "spec:"
+    - "  type: NodePort"
+    - "  selector:"
+    - "    app: {{CLIENTNAME}}"
+    - "  ports:"
+    - "    - port: {{PORT1}}"
+    - "      targetPort: {{TARGETPORT}}"
+    - "      nodePort: {{PORTN}}"
+
+- name: mise en place du service
+  shell: "{{ item }}"
+  with_items:
+    - sudo -H -u root sh -c "kubectl apply -f /root/k8sapp/svc.yml"
