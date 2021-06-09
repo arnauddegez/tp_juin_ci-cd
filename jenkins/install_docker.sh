@@ -8,6 +8,7 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] 
 sudo apt-get update
 sudo apt-get -y install docker-ce docker-ce-cli containerd.io
 sudo usermod -aG docker vagrant
+sudo usermod -aG docker jenkins
 
 #mise en place du mot de passe pour vagrant
 
